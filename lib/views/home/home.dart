@@ -59,9 +59,13 @@ class _HomeState extends State<Home> {
           final data = products[index];
           
           return Card(
+            margin: EdgeInsets.all(10),
             child: ListTile(
               leading: Image.network(data["images"][0]),
               title: Text(data["title"]),
+              subtitle: Text(data["description"],
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,),
             ),
           );
         },
