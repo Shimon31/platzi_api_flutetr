@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:api_practice/models/product_model.dart';
+import 'package:api_practice/services/api_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -15,37 +16,23 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<ProductModel> products = [];
 
-  Future fetchData() async {
-    final url = Uri.parse("https://api.escuelajs.co/api/v1/products");
 
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      print("Success");
-
-      final jsonData = jsonDecode(response.body);
-
-      setState(() {
-        for (var product in jsonData) {
-          products.add(ProductModel(
-            id: product["id"],
-            title: product["title"],
-            description: product["description"],
-            images: product["images"][0],
-          ));
-        }
-      });
-
-      print(products.length);
-    } else {
-      print("Failed");
-    }
-  }
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
     fetchData();
+  }
+  
+  fetchData() async{
+    final data = await ApiServices.fetchData();
+    
+    print(data?.length);
+
+    setState(() {
+      products = data!;
+    });
   }
 
   @override
