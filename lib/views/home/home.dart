@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:api_practice/models/post_model.dart';
+import 'package:api_practice/models/product_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -13,7 +13,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<PostModel> products = [];
+  List<ProductModel> products = [];
 
   Future fetchData() async {
     final url = Uri.parse("https://api.escuelajs.co/api/v1/products");
@@ -21,20 +21,19 @@ class _HomeState extends State<Home> {
     final response = await http.get(url);
     if (response.statusCode == 200) {
       print("Success");
-      print(response.body.runtimeType);
 
       final jsonData = jsonDecode(response.body);
 
-      print(jsonData);
-      //
-      final productList = jsonData["data"] as List;
-
-      // print(productList);
-
-      // setState(() {
-      //   products = jsonData;
-      // });
-
+      setState(() {
+        for (var product in jsonData) {
+          products.add(ProductModel(
+            id: product["id"],
+            title: product["title"],
+            description: product["description"],
+            images: product["images"][0],
+          ));
+        }
+      });
 
       print(products.length);
     } else {
@@ -42,14 +41,12 @@ class _HomeState extends State<Home> {
     }
   }
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     fetchData();
   }
-
 
   @override
   Widget build(BuildContext context) {
